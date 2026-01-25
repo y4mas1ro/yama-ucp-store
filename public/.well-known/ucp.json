@@ -6,7 +6,7 @@
                 "version": "2026-01-10",
                 "rest": {
                     "schema": "https://ucp.dev/services/shopping/rest.openapi.json",
-                    "endpoint": "https://your-vercel-app.vercel.app/api/ucp"
+                    "endpoint": "https://ucp-store.vercel.app/"
                 }
             }
         }
