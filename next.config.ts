@@ -1,15 +1,14 @@
 import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
-  async headers() {
-    return [
-      {
-        source: '/.well-known/ucp',
-        headers: [
-          { key: 'Cache-Control', value: 'public, max-age=3600' }
-        ]
-      }
-    ];
+  // headers削除（Server Route不要）
+  trailingSlash: true,
+
+  // 静的配信最適化のみ
+  images: {
+    remotePatterns: [
+      { protocol: 'https', hostname: 'ucp.dev' }
+    ]
   }
 };
 
