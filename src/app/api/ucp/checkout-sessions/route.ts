@@ -1,32 +1,58 @@
+// src/app/api/ucp/checkout-sessions/route.ts
 import { NextRequest, NextResponse } from 'next/server';
+import { createCheckoutSession } from '@/lib/checkoutSessions';
+import type { LineItem, Payment, Buyer } from '@/lib/checkoutSessions';
+
+export const dynamic = 'force-dynamic';
 
 export async function POST(req: NextRequest) {
-    // 環境変数確認（デバッグ用、一時的）
-    if (!process.env.STRIPE_SECRET_KEY_TEST) {
-        return NextResponse.json({ error: 'STRIPE_SECRET_KEY_TEST not set' }, { status: 500 });
-    }
+    try {
+        const body = await req.json();
 
-    const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY_TEST);  // 関数内で初期化
+        // Validate required fields
+        if (!body.line_items || !Array.isArray(body.line_items) || body.line_items.length === 0) {
+            return NextResponse.json(
+                { error: 'line_items is required and must be a non-empty array' },
+                { status: 400 }
+            );
+        }
 
-    const body = await req.json();
+        if (!body.currency) {
+            return NextResponse.json(
+                { error: 'currency is required' },
+                { status: 400 }
+            );
+        }
 
-    const session = await stripe.checkout.sessions.create({
-        mode: 'payment',
-        line_items: [{
-            price_data: {
-                currency: 'jpy',
-                product_data: { name: 'Test Product' },
-                unit_amount: 1000,
+        if (!body.payment) {
+            return NextResponse.json(
+                { error: 'payment is required' },
+                { status: 400 }
+            );
+        }
+
+        const line_items: LineItem[] = body.line_items;
+        const currency: string = body.currency;
+        const payment: Payment = body.payment;
+        const buyer: Buyer | undefined = body.buyer;
+
+        // Create checkout session
+        const session = createCheckoutSession(line_items, currency, payment, buyer);
+
+        // Return UCP-compliant response
+        return NextResponse.json({
+            ucp: {
+                version: '2026-01-11',
+                name: 'dev.ucp.shopping.checkout'
             },
-            quantity: body.items?.[0]?.quantity || 1,
-        }],
-        success_url: `${req.headers.get('origin')}/success`,
-        cancel_url: `${req.headers.get('origin')}/cancel`,
-    });
+            ...session
+        }, { status: 201 });
 
-    return NextResponse.json({
-        sessionId: session.id,
-        status: 'open',
-        checkoutUrl: session.url
-    });
+    } catch (error) {
+        console.error('Error creating checkout session:', error);
+        return NextResponse.json(
+            { error: 'Internal server error' },
+            { status: 500 }
+        );
+    }
 }
