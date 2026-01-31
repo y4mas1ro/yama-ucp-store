@@ -20,6 +20,7 @@ export async function GET(
         title: product.title,
         description: product.description,
         link: product.link,
+        mobileLink: product.mobileLink,
         imageLink: product.imageLink,
         availability: product.availability,
         price: product.price,

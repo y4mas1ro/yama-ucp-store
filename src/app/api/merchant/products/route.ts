@@ -17,6 +17,7 @@ export async function GET(req: NextRequest) {
         title: p.title,
         description: p.description,
         link: p.link,
+        mobileLink: p.mobileLink,
         imageLink: p.imageLink,
         availability: p.availability,
         price: p.price,
