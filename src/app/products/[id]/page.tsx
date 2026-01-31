@@ -58,11 +58,12 @@ export default async function ProductPage({ params }: Props) {
                     <div className="bg-white p-4 rounded-2xl shadow-sm">
                         <div className="relative aspect-square overflow-hidden rounded-xl bg-zinc-100">
                             <Image
-                                src={product.imageLink}
+                                src={product.imageLink.includes('/images/') ? `/images/${product.imageLink.split('/images/')[1]}` : product.imageLink}
                                 alt={product.title}
                                 fill
                                 className="object-cover"
                                 priority
+                                unoptimized
                             />
                         </div>
                     </div>

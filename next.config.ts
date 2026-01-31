@@ -7,7 +7,8 @@ const nextConfig: NextConfig = {
   // 静的配信最適化のみ
   images: {
     remotePatterns: [
-      { protocol: 'https', hostname: 'ucp.dev' }
+      { protocol: 'https', hostname: 'ucp.dev' },
+      { protocol: 'https', hostname: 'yama-ucp-store.vercel.app' }
     ]
   }
 };

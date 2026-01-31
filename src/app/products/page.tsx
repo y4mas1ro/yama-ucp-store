@@ -40,10 +40,11 @@ export default function ProductsPage() {
                         >
                             <div className="relative aspect-square overflow-hidden rounded-2xl bg-white shadow-sm transition-all duration-500 group-hover:shadow-md group-hover:-translate-y-1">
                                 <Image
-                                    src={product.imageLink}
+                                    src={product.imageLink.includes('/images/') ? `/images/${product.imageLink.split('/images/')[1]}` : product.imageLink}
                                     alt={product.title}
                                     fill
                                     className="object-cover transition-transform duration-700 group-hover:scale-105"
+                                    unoptimized
                                 />
                                 <div className="absolute top-4 left-4">
                                     <span className="bg-white/90 backdrop-blur-sm px-3 py-1 text-[10px] font-bold uppercase tracking-widest rounded-full shadow-sm">
