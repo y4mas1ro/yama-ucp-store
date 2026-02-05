@@ -1,0 +1,3 @@
+{
+  "/api/ucp/checkout-sessions/[id]/cancel/route": "app/api/ucp/checkout-sessions/[id]/cancel/route.js"
+}

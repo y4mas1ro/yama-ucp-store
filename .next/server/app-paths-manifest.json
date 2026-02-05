@@ -1,0 +1,15 @@
+{
+  "/.well-known/ucp/route": "app/.well-known/ucp/route.js",
+  "/_global-error/page": "app/_global-error/page.js",
+  "/_not-found/page": "app/_not-found/page.js",
+  "/api/merchant/products/[id]/route": "app/api/merchant/products/[id]/route.js",
+  "/api/merchant/products/route": "app/api/merchant/products/route.js",
+  "/api/ucp/checkout-sessions/[id]/cancel/route": "app/api/ucp/checkout-sessions/[id]/cancel/route.js",
+  "/api/ucp/checkout-sessions/[id]/complete/route": "app/api/ucp/checkout-sessions/[id]/complete/route.js",
+  "/api/ucp/checkout-sessions/[id]/route": "app/api/ucp/checkout-sessions/[id]/route.js",
+  "/api/ucp/checkout-sessions/route": "app/api/ucp/checkout-sessions/route.js",
+  "/favicon.ico/route": "app/favicon.ico/route.js",
+  "/page": "app/page.js",
+  "/products/[id]/page": "app/products/[id]/page.js",
+  "/products/page": "app/products/page.js"
+}

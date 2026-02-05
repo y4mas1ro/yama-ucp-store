@@ -1,0 +1,15 @@
+{
+  "/.well-known/ucp/route": "/.well-known/ucp",
+  "/_global-error/page": "/_global-error",
+  "/_not-found/page": "/_not-found",
+  "/api/merchant/products/[id]/route": "/api/merchant/products/[id]",
+  "/api/merchant/products/route": "/api/merchant/products",
+  "/api/ucp/checkout-sessions/[id]/cancel/route": "/api/ucp/checkout-sessions/[id]/cancel",
+  "/api/ucp/checkout-sessions/[id]/complete/route": "/api/ucp/checkout-sessions/[id]/complete",
+  "/api/ucp/checkout-sessions/[id]/route": "/api/ucp/checkout-sessions/[id]",
+  "/api/ucp/checkout-sessions/route": "/api/ucp/checkout-sessions",
+  "/favicon.ico/route": "/favicon.ico",
+  "/page": "/",
+  "/products/[id]/page": "/products/[id]",
+  "/products/page": "/products"
+}
