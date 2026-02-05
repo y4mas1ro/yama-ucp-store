@@ -1,7 +1,7 @@
 // packages/backend/src/routes/ucp.ts
 import { Router } from 'express';
 import { v4 as uuidv4 } from 'uuid';
-import { store } from '../stores/memoryStore';
+import { store } from '../stores';
 import { authMiddleware, AuthRequest } from '../middleware/auth';
 import {
     CheckoutSession,
@@ -18,7 +18,7 @@ export const ucpRouter = Router();
 ucpRouter.use(authMiddleware);
 
 // Create checkout session
-ucpRouter.post('/checkout-sessions', (req: AuthRequest, res) => {
+ucpRouter.post('/checkout-sessions', async (req: AuthRequest, res) => {
     const { line_items, currency, payment, buyer } = req.body;
 
     if (!line_items || !Array.isArray(line_items) || line_items.length === 0) {
@@ -71,7 +71,7 @@ ucpRouter.post('/checkout-sessions', (req: AuthRequest, res) => {
         updated_at: now
     };
 
-    store.setSession(id, session);
+    await store.setSession(id, session);
 
     res.status(201).json({
         ucp: {
@@ -83,17 +83,17 @@ ucpRouter.post('/checkout-sessions', (req: AuthRequest, res) => {
 });
 
 // Get checkout session
-ucpRouter.get('/checkout-sessions/:id', (req, res) => {
+ucpRouter.get('/checkout-sessions/:id', async (req, res) => {
     const id = req.params.id as string;
-    const session = store.getSession(id);
+    const session = await store.getSession(id);
     if (!session) return res.status(404).json({ error: 'Session not found' });
     res.json(session);
 });
 
 // Update checkout session
-ucpRouter.put('/checkout-sessions/:id', (req, res) => {
+ucpRouter.put('/checkout-sessions/:id', async (req, res) => {
     const id = req.params.id as string;
-    const session = store.getSession(id);
+    const session = await store.getSession(id);
     if (!session) return res.status(404).json({ error: 'Session not found' });
 
     const updates = req.body;
@@ -105,14 +105,14 @@ ucpRouter.put('/checkout-sessions/:id', (req, res) => {
         updated_at: new Date().toISOString()
     };
 
-    store.setSession(id, updatedSession);
+    await store.setSession(id, updatedSession);
     res.json(updatedSession);
 });
 
 // Complete checkout session
-ucpRouter.post('/checkout-sessions/:id/complete', (req: AuthRequest, res) => {
+ucpRouter.post('/checkout-sessions/:id/complete', async (req: AuthRequest, res) => {
     const sessionId = req.params.id as string;
-    const session = store.getSession(sessionId);
+    const session = await store.getSession(sessionId);
     if (!session) return res.status(404).json({ error: 'Session not found' });
 
     const order_id = uuidv4();
@@ -130,7 +130,7 @@ ucpRouter.post('/checkout-sessions/:id/complete', (req: AuthRequest, res) => {
         updated_at: new Date().toISOString()
     };
 
-    store.setSession(sessionId, updatedSession);
+    await store.setSession(sessionId, updatedSession);
 
     // Add to history
     const userId = req.userId!;
@@ -142,10 +142,10 @@ ucpRouter.post('/checkout-sessions/:id/complete', (req: AuthRequest, res) => {
         currency: session.currency,
         created_at: order.created_at
     };
-    store.addHistory(userId, record);
+    await store.addHistory(userId, record);
 
     // Clear cart
-    store.clearCart(userId);
+    await store.clearCart(userId);
 
     res.json(updatedSession);
 });

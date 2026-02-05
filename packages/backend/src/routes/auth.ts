@@ -1,14 +1,14 @@
 // packages/backend/src/routes/auth.ts
 import { Router } from 'express';
 import { v4 as uuidv4 } from 'uuid';
-import { store } from '../stores/memoryStore';
+import { store } from '../stores';
 import { AuthToken } from '../types';
 
 export const authRouter = Router();
 
-authRouter.post('/login', (req, res) => {
+authRouter.post('/login', async (req, res) => {
     const { username, password } = req.body;
-    const user = store.getUser(username);
+    const user = await store.getUser(username);
 
     if (user && user.password === password) {
         const tokenStr = uuidv4();
@@ -18,29 +18,29 @@ authRouter.post('/login', (req, res) => {
             userId: user.id,
             expiresAt
         };
-        store.saveToken(token);
+        await store.saveToken(token);
         res.json({ token: tokenStr, username: user.username });
     } else {
         res.status(401).json({ error: 'Invalid username or password' });
     }
 });
 
-authRouter.post('/logout', (req, res) => {
+authRouter.post('/logout', async (req, res) => {
     const authHeader = req.headers.authorization;
     if (authHeader && authHeader.startsWith('Bearer ')) {
         const tokenStr = authHeader.substring(7);
-        store.deleteToken(tokenStr);
+        await store.deleteToken(tokenStr);
     }
     res.json({ success: true });
 });
 
-authRouter.get('/session', (req, res) => {
+authRouter.get('/session', async (req, res) => {
     const authHeader = req.headers.authorization;
     if (authHeader && authHeader.startsWith('Bearer ')) {
         const tokenStr = authHeader.substring(7);
-        const token = store.getToken(tokenStr);
+        const token = await store.getToken(tokenStr);
         if (token) {
-            const user = store.getUser(token.userId);
+            const user = await store.getUser(token.userId);
             return res.json({ username: user?.username });
         }
     }

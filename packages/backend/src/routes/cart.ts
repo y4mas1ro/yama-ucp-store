@@ -1,6 +1,6 @@
 // packages/backend/src/routes/cart.ts
 import { Router } from 'express';
-import { store } from '../stores/memoryStore';
+import { store } from '../stores';
 import { CartItem } from '../types';
 import { authMiddleware, AuthRequest } from '../middleware/auth';
 
@@ -8,17 +8,17 @@ export const cartRouter = Router();
 
 cartRouter.use(authMiddleware);
 
-cartRouter.get('/', (req: AuthRequest, res) => {
+cartRouter.get('/', async (req: AuthRequest, res) => {
     const userId = req.userId!;
-    const items = store.getCart(userId);
+    const items = await store.getCart(userId);
     res.json(items);
 });
 
-cartRouter.post('/', (req: AuthRequest, res) => {
+cartRouter.post('/', async (req: AuthRequest, res) => {
     const userId = req.userId!;
     const newItem: CartItem = req.body;
 
-    let items = store.getCart(userId);
+    let items = await store.getCart(userId);
     const existingIndex = items.findIndex(item => item.id === newItem.id);
 
     if (existingIndex > -1) {
@@ -27,23 +27,23 @@ cartRouter.post('/', (req: AuthRequest, res) => {
         items.push(newItem);
     }
 
-    store.setCart(userId, items);
+    await store.setCart(userId, items);
     res.json(items);
 });
 
-cartRouter.delete('/:id', (req: AuthRequest, res) => {
+cartRouter.delete('/:id', async (req: AuthRequest, res) => {
     const userId = req.userId!;
     const { id } = req.params;
 
-    let items = store.getCart(userId);
+    let items = await store.getCart(userId);
     items = items.filter(item => item.id !== id);
 
-    store.setCart(userId, items);
+    await store.setCart(userId, items);
     res.json(items);
 });
 
-cartRouter.post('/clear', (req: AuthRequest, res) => {
+cartRouter.post('/clear', async (req: AuthRequest, res) => {
     const userId = req.userId!;
-    store.clearCart(userId);
+    await store.clearCart(userId);
     res.json([]);
 });

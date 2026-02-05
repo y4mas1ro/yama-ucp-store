@@ -1,8 +1,8 @@
 // packages/backend/src/stores/memoryStore.ts
 import { CheckoutSession, CartItem, PurchaseRecord, User, AuthToken } from '../types';
-import { v4 as uuidv4 } from 'uuid';
+import { IStore } from './baseStore';
 
-class MemoryStore {
+export class MemoryStore implements IStore {
     private carts: Map<string, CartItem[]> = new Map();
     private history: Map<string, PurchaseRecord[]> = new Map();
     private sessions: Map<string, CheckoutSession> = new Map();
@@ -23,15 +23,15 @@ class MemoryStore {
     }
 
     // Auth operations
-    getUser(username: string): User | undefined {
+    async getUser(username: string): Promise<User | undefined> {
         return this.users.get(username);
     }
 
-    saveToken(token: AuthToken): void {
+    async saveToken(token: AuthToken): Promise<void> {
         this.tokens.set(token.token, token);
     }
 
-    getToken(tokenStr: string): AuthToken | undefined {
+    async getToken(tokenStr: string): Promise<AuthToken | undefined> {
         const token = this.tokens.get(tokenStr);
         if (token && token.expiresAt > Date.now()) {
             return token;
@@ -40,46 +40,44 @@ class MemoryStore {
         return undefined;
     }
 
-    deleteToken(tokenStr: string): void {
+    async deleteToken(tokenStr: string): Promise<void> {
         this.tokens.delete(tokenStr);
     }
 
     // Cart operations
-    getCart(userId: string): CartItem[] {
+    async getCart(userId: string): Promise<CartItem[]> {
         return this.carts.get(userId) || [];
     }
 
-    setCart(userId: string, items: CartItem[]): void {
+    async setCart(userId: string, items: CartItem[]): Promise<void> {
         this.carts.set(userId, items);
     }
 
-    clearCart(userId: string): void {
+    async clearCart(userId: string): Promise<void> {
         this.carts.delete(userId);
     }
 
     // History operations
-    getHistory(userId: string): PurchaseRecord[] {
+    async getHistory(userId: string): Promise<PurchaseRecord[]> {
         return this.history.get(userId) || [];
     }
 
-    addHistory(userId: string, record: PurchaseRecord): void {
-        const records = this.getHistory(userId);
+    async addHistory(userId: string, record: PurchaseRecord): Promise<void> {
+        const records = await this.getHistory(userId);
         records.push(record);
         this.history.set(userId, records);
     }
 
     // Checkout Session operations
-    getSession(sessionId: string): CheckoutSession | undefined {
+    async getSession(sessionId: string): Promise<CheckoutSession | undefined> {
         return this.sessions.get(sessionId);
     }
 
-    setSession(sessionId: string, session: CheckoutSession): void {
+    async setSession(sessionId: string, session: CheckoutSession): Promise<void> {
         this.sessions.set(sessionId, session);
     }
 
-    deleteSession(sessionId: string): void {
+    async deleteSession(sessionId: string): Promise<void> {
         this.sessions.delete(sessionId);
     }
 }
-
-export const store = new MemoryStore();
