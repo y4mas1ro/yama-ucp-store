@@ -56,12 +56,12 @@ ucpRouter.post('/checkout-sessions', async (req: AuthRequest, res) => {
         links: [
             {
                 rel: 'terms_of_service',
-                href: 'http://localhost:3000/terms',
+                href: 'https://yama-ucp-store.vercel.app/terms',
                 title: 'Terms of Service'
             },
             {
                 rel: 'privacy_policy',
-                href: 'http://localhost:3000/privacy',
+                href: 'https://yama-ucp-store.vercel.app/privacy',
                 title: 'Privacy Policy'
             }
         ],
@@ -120,7 +120,7 @@ ucpRouter.post('/checkout-sessions/:id/complete', async (req: AuthRequest, res) 
         order_id,
         order_number: `ORD-${Date.now()}`,
         created_at: new Date().toISOString(),
-        confirmation_url: `http://localhost:3000/orders/${order_id}`
+        confirmation_url: `https://yama-ucp-store.vercel.app/orders/${order_id}`
     };
 
     const updatedSession: CheckoutSession = {
