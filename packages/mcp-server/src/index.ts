@@ -147,21 +147,52 @@ server.tool(
 
 const app = express();
 app.use(cors());
+app.use(express.json()); // Moved up
+
+// Diagnostic route
+app.get("/debug/tools", (req, res) => {
+    // Access internal tools list if possible, or just return what we expect
+    res.json({
+        name: server.name,
+        version: server.version,
+        message: "Server is running. Check /sse for MCP connection.",
+        backend_url: BACKEND_URL
+    });
+});
 
 let transport: SSEServerTransport | null = null;
 
 app.get("/sse", async (req, res) => {
-    console.log("New SSE connection");
+    console.log("New SSE connection attempt");
+
+    // Set headers explicitly for better Vercel support
+    res.setHeader('Content-Type', 'text/event-stream');
+    res.setHeader('Cache-Control', 'no-cache');
+    res.setHeader('Connection', 'keep-alive');
+
     transport = new SSEServerTransport("/messages", res);
-    await server.connect(transport);
+
+    try {
+        await server.connect(transport);
+        console.log("MCP Server connected to SSE transport");
+    } catch (error) {
+        console.error("Failed to connect MCP server to transport:", error);
+    }
 });
 
 app.post("/messages", async (req, res) => {
+    console.log("Received message:", JSON.stringify(req.body));
     if (!transport) {
-        res.status(400).send("No SSE connection established");
+        console.error("No active transport for /messages");
+        res.status(400).send("No SSE connection established. Please connect to /sse first.");
         return;
     }
-    await transport.handlePostMessage(req, res);
+    try {
+        await transport.handlePostMessage(req, res);
+    } catch (error) {
+        console.error("Error handling post message:", error);
+        res.status(500).send("Internal error handling message");
+    }
 });
 
 const PORT = process.env.PORT || 3002;
