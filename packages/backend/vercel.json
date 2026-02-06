@@ -1,10 +1,23 @@
 {
+  "version": 2,
   "git": {
     "productionBranch": "feature/develop2"
   },
-  "headers": [
+  "builds": [
+    {
+      "src": "src/index.ts",
+      "use": "@vercel/node"
+    }
+  ],
+  "rewrites": [
     {
       "source": "/api/(.*)",
+      "destination": "src/index.ts"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
       "headers": [
         {
           "key": "Access-Control-Allow-Credentials",

@@ -1,6 +1,6 @@
 // packages/frontend/src/lib/api.ts
 
-const API_BASE = 'http://localhost:3001/api';
+const API_BASE = 'https://yama-ucp-store-backend.vercel.app/api';
 
 export async function apiFetch(path: string, options: RequestInit = {}) {
     const token = typeof window !== 'undefined' ? localStorage.getItem('yama_token') : null;
