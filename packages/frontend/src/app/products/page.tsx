@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
-import { merchantProducts } from '@/lib/merchantProducts';
+import { searchProducts } from '@/lib/products';
 import Header from '@/components/Header';
 
 export const metadata: Metadata = {
@@ -9,7 +9,9 @@ export const metadata: Metadata = {
     description: 'Explore our curated collection of premium products, including jewels and sweets.',
 };
 
-export default function ProductsPage() {
+export default async function ProductsPage() {
+    const products = await searchProducts();
+
     return (
         <div className="min-h-screen bg-[#faf9f6] text-[#333] font-sans">
             <Header />
@@ -24,7 +26,7 @@ export default function ProductsPage() {
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-12">
-                    {merchantProducts.map((product) => (
+                    {products.map((product) => (
                         <Link
                             key={product.id}
                             href={`/products/${product.id}/`}
@@ -40,7 +42,7 @@ export default function ProductsPage() {
                                 />
                                 <div className="absolute top-4 left-4">
                                     <span className="bg-white/90 backdrop-blur-sm px-3 py-1 text-[10px] font-bold uppercase tracking-widest rounded-full shadow-sm">
-                                        {product.condition === 'NEW' ? 'New' : ''}
+                                        {product.availability === 'in_stock' ? 'New' : ''}
                                     </span>
                                 </div>
                             </div>

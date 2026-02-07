@@ -15,6 +15,9 @@ export async function GET() {
                     rest: {
                         schema: "https://ucp.dev/services/shopping/rest.openapi.json",
                         endpoint: "https://yama-ucp-store.vercel.app/api/ucp"
+                    },
+                    extensions: {
+                        products_endpoint: "https://yama-ucp-store-backend.vercel.app/api/products"
                     }
                 }
             },

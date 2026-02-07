@@ -54,6 +54,29 @@ export default async function ProductPage({ params }: Props) {
                 </div>
             </header>
 
+            {/* Schema.org Product Markup */}
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{
+                    __html: JSON.stringify({
+                        "@context": "https://schema.org",
+                        "@type": "Product",
+                        "name": product.title,
+                        "description": product.description,
+                        "image": product.imageLink,
+                        "offers": {
+                            "@type": "Offer",
+                            "price": product.price.value,
+                            "priceCurrency": product.price.currency,
+                            "availability": product.availability === 'IN_STOCK'
+                                ? "https://schema.org/InStock"
+                                : "https://schema.org/OutOfStock",
+                            "url": product.link
+                        }
+                    })
+                }}
+            />
+
             <main className="max-w-6xl mx-auto px-6 py-12 md:py-20">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
                     {/* Image Section */}

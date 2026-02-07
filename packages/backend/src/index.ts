@@ -5,6 +5,7 @@ import { cartRouter } from './routes/cart';
 import { ucpRouter } from './routes/ucp';
 import { historyRouter } from './routes/history';
 import { authRouter } from './routes/auth';
+import productsRouter from './routes/products';
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -54,6 +55,7 @@ app.use('/api/auth', authRouter);
 app.use('/api/cart', cartRouter);
 app.use('/api/ucp', ucpRouter);
 app.use('/api/history', historyRouter);
+app.use('/api/products', productsRouter);
 
 // Global Error Handling
 app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {

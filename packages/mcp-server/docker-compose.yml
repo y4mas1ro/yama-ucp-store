@@ -1,0 +1,9 @@
+services:
+  mcp-server:
+    build: .
+    environment:
+      - TRANSPORT=stdio
+      - BACKEND_URL=https://yama-ucp-store-backend.vercel.app
+    # For stdio, we don't need ports, but for debugging/SSE we might
+    # ports:
+    #   - "3002:3002"

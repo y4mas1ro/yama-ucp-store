@@ -1,0 +1,5 @@
+node_modules
+# dist removed to allow local build copy
+.vercel
+.next
+*.log
